@@ -1,6 +1,7 @@
 const formidable = require('formidable')
 const util = require('util')
 const express = require('express')
+const he = require('he')
 const config = require('./config')
 
 const app = express()
@@ -22,7 +23,7 @@ app.post('/upload', function(req, res) {
   form.maxFileSize = 4 * 1000 * 1000 * 1000
 
   form.on('fileBegin', function(name, file) {
-    file.path = config.uploadDir + '/' + file.name;
+    file.path = config.uploadDir + '/' + he.decode(file.name);
   })
 
   form.parse(req, function(err, fields, files) {
