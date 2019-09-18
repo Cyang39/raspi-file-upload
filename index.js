@@ -19,9 +19,11 @@ app.get('/', (req, res) => {
 
 app.post('/upload', function(req, res) {
   var form = new formidable.IncomingForm()
-
-  form.uploadDir = config.uploadDir
   form.maxFileSize = 4 * 1000 * 1000 * 1000
+
+  form.on('fileBegin', function(name, file) {
+    file.name = config.uploadDir + '/' + file.name;
+  })
 
   form.parse(req, function(err, fields, files) {
     res.writeHead(200, {'content-type': 'text/plain'})
