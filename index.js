@@ -1,23 +1,12 @@
-var formidable = require('formidable'),
-    http = require('http'),
-    util = require('util');
- 
-http.createServer(function(req, res) {
-  if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
-    // parse a file upload
-    var form = new formidable.IncomingForm();
- 
-    form.uploadDir = "/home/pi/Toshiba";
-    form.maxFileSize = 4 * 1000 * 1000 * 1000; 
-    form.parse(req, function(err, fields, files) {
-      res.writeHead(200, {'content-type': 'text/plain'});
-      res.write('received upload:\n\n');
-      res.end(util.inspect({fields: fields, files: files}));
-    });
- 
-    return;
-  }
- 
+const formidable = require('formidable')
+const http = require('http')
+const util = require('util')
+const express = require('express')
+
+const app = express()
+const port = 8080
+
+app.get('/', (req, res) => {
   // show a file upload form
   res.writeHead(200, {'content-type': 'text/html'});
   res.end(
@@ -26,5 +15,20 @@ http.createServer(function(req, res) {
     '<input type="file" name="upload" multiple="multiple"><br>'+
     '<input type="submit" value="Upload">'+
     '</form>'
-  );
-}).listen(80);
+  )
+})
+
+app.post('/upload', function(req, res) {
+  var form = new formidable.IncomingForm();
+
+  form.uploadDir = "/Users/cyang/Desktop";
+  form.maxFileSize = 4 * 1000 * 1000 * 1000;
+
+  form.parse(req, function(err, fields, files) {
+    res.writeHead(200, {'content-type': 'text/plain'});
+    res.write('received upload:\n\n');
+    res.end(util.inspect({fields: fields, files: files}));
+  });
+})
+
+app.listen(port, () => console.log(`App listening on port ${port}!`))
