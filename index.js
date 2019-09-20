@@ -8,18 +8,20 @@ const config = require('./config')
 const app = express()
 
 const isUnderServerRoot = (path, root) => path.indexOf(root) === 0
+const statSync = (path) => fs.statSync(decodeURIComponent(path), "utf8")
+const readdirSync = (path) => fs.readdirSync(decodeURIComponent(path), "utf8")
 
 app.get('*', (req, res) => {
   const wholePath = config.uploadDir + req.path
   // is file
-  if(fs.statSync(decodeURIComponent(wholePath), 'urf8').isFile()) {
+  if(statSync(wholePath).isFile()) {
     res.end('<p> You May download! <p>')
     return
   }
   // is folder
-  const children = fs.readdirSync(wholePath)
-  const childrenDir = children.filter(x => !fs.statSync(wholePath + '/' + x).isFile())
-  const childrenFile = children.filter(x => fs.statSync(wholePath + '/' + x).isFile())
+  const children = readdirSync(wholePath)
+  const childrenDir = children.filter(x => !statSync(wholePath + '/' + x).isFile())
+  const childrenFile = children.filter(x => statSync(wholePath + '/' + x).isFile())
   const _curPath = req.path.split('/').pop()
   const curPath = _curPath ? './' + _curPath : _curPath;
 
@@ -27,9 +29,9 @@ app.get('*', (req, res) => {
   res.end(
     '<meta charset="utf-8" />'+
     `<ul>${childrenDir.map(x => '<li>【文件夹】 <a href="'+ curPath + '/' + x +'">' + x +'</a></li>').join('')}</ul>`+
-    `<ul>${childrenFile.map(x => '<li>【文件】 <a href="'+ curPath + '/' + x +'">' + x +'</a></li>').join('')}</ul>`+
+    `<ul>${childrenFile.map(x => '<li>【文件】 <a href="'+ curPath + '/' + x +'" target="_blank">' + x +'</a></li>').join('')}</ul>`+
     '<form action="/upload" enctype="multipart/form-data" method="post">'+
-    '<input type="text" name="path" value="'+ req.path +'" readonly><br>'+
+    '<input type="text" name="path" value="'+ decodeURIComponent(req.path) +'" readonly><br>'+
     '<input type="file" name="upload" multiple="multiple"><br>'+
     '<input type="submit" value="Upload">'+
     '</form>'
