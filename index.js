@@ -7,18 +7,23 @@ const config = require('./config')
 
 const app = express()
 
+const isUnderServerRoot = (path, root) => path.indexOf(root) === 0
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.writeHead(200, {'content-type': 'text/html'})
-  const children = fs.readdirSync(config.uploadDir)
-  const childrenDir = children.filter(x => !fs.statSync(config.uploadDir + '/' + x).isFile())
-  const childrenFile = children.filter(x => fs.statSync(config.uploadDir + '/' + x).isFile())
+  const folerPath = config.uploadDir + req.path
+  const children = fs.readdirSync(folerPath)
+  const childrenDir = children.filter(x => !fs.statSync(folerPath + '/' + x).isFile())
+  const childrenFile = children.filter(x => fs.statSync(folerPath + '/' + x).isFile())
+  const _curPath = req.path.split('/').pop()
+  const curPath = _curPath ? './' + _curPath : _curPath;
+
   res.end(
     '<meta charset="utf-8" />'+
-    `<ul>${childrenDir.map(x => '<li>📂<a href=' + x +'>' + x +'</a></li>').join('')}</ul>`+
-    `<ul>${childrenFile.map(x => '<li>📃<a href=' + x +'>' + x +'</a></li>').join('')}</ul>`+
+    `<ul>${childrenDir.map(x => '<li>【文件夹】 <a href="'+ curPath + '/' + x +'">' + x +'</a></li>').join('')}</ul>`+
+    `<ul>${childrenFile.map(x => '<li>【文件】 <a href="#">' + x +'</a></li>').join('')}</ul>`+
     '<form action="/upload" enctype="multipart/form-data" method="post">'+
-    '<input type="text" name="path"><br>'+
+    '<input type="text" name="path" value="'+ req.path +'" readonly><br>'+
     '<input type="file" name="upload" multiple="multiple"><br>'+
     '<input type="submit" value="Upload">'+
     '</form>'
@@ -32,7 +37,7 @@ app.post('/upload', function(req, res) {
   form.on('field', function(name, value) {
     if(!value) value = config.uploadDir
     form.on('fileBegin', function(name, file) {
-      file.path = value + '/' + he.decode(file.name);
+      file.path = config.uploadDir + value + '/' + he.decode(file.name);
     })
   });
 
