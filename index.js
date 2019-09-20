@@ -10,18 +10,24 @@ const app = express()
 const isUnderServerRoot = (path, root) => path.indexOf(root) === 0
 
 app.get('*', (req, res) => {
-  res.writeHead(200, {'content-type': 'text/html'})
-  const folerPath = config.uploadDir + req.path
-  const children = fs.readdirSync(folerPath)
-  const childrenDir = children.filter(x => !fs.statSync(folerPath + '/' + x).isFile())
-  const childrenFile = children.filter(x => fs.statSync(folerPath + '/' + x).isFile())
+  const wholePath = config.uploadDir + req.path
+  // is file
+  if(fs.statSync(wholePath).isFile()) {
+    res.end('<p> You May download! <p>')
+    return
+  }
+  // is folder
+  const children = fs.readdirSync(wholePath)
+  const childrenDir = children.filter(x => !fs.statSync(wholePath + '/' + x).isFile())
+  const childrenFile = children.filter(x => fs.statSync(wholePath + '/' + x).isFile())
   const _curPath = req.path.split('/').pop()
   const curPath = _curPath ? './' + _curPath : _curPath;
 
+  res.writeHead(200, {'content-type': 'text/html'})
   res.end(
     '<meta charset="utf-8" />'+
     `<ul>${childrenDir.map(x => '<li>【文件夹】 <a href="'+ curPath + '/' + x +'">' + x +'</a></li>').join('')}</ul>`+
-    `<ul>${childrenFile.map(x => '<li>【文件】 <a href="#">' + x +'</a></li>').join('')}</ul>`+
+    `<ul>${childrenFile.map(x => '<li>【文件】 <a href="'+ curPath + '/' + x +'">' + x +'</a></li>').join('')}</ul>`+
     '<form action="/upload" enctype="multipart/form-data" method="post">'+
     '<input type="text" name="path" value="'+ req.path +'" readonly><br>'+
     '<input type="file" name="upload" multiple="multiple"><br>'+
