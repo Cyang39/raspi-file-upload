@@ -16,13 +16,14 @@ const isUnderServerRoot = (path, root) => path.indexOf(root) === 0
 const statSync = (path) => fs.statSync(decodeURIComponent(path), "utf8")
 const readdirSync = (path) => fs.readdirSync(decodeURIComponent(path), "utf8")
 
-app.get('*', express.static(config.uploadDir, { hidden: true }))
+app.get('/favicon.ico', (req, res) => res.status(204));
+app.get('*', express.static(config.uploadDir, { dotfiles: 'allow' }))
 
 app.get('*', (req, res) => {
   const wholePath = config.uploadDir + req.path
   // is file
   if(statSync(wholePath).isFile()) {
-    res.sendfile(decodeURIComponent(wholePath))
+    res.sendFile(decodeURIComponent(wholePath))
     return
   }
   // is folder
