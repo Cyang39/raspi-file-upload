@@ -3,26 +3,20 @@ const util = require('util')
 const express = require('express')
 const he = require('he')
 const fs = require('fs')
-const path = require('path')
 const config = require('./config')
 
 const app = express()
 
-function exists(filepath){  
-  return fs.existsSync(filepath);  
-}  
-
-function isFile(filepath) {  
-  return exists(filepath) && fs.statSync(filepath).isFile();  
-}  
-
 
 app.get('/', (req, res) => {
-  // show a file upload form
   res.writeHead(200, {'content-type': 'text/html'})
+  const children = fs.readdirSync(config.uploadDir)
+  const childrenDir = children.filter(x => !fs.statSync(config.uploadDir + '/' + x).isFile())
+  const childrenFile = children.filter(x => fs.statSync(config.uploadDir + '/' + x).isFile())
   res.end(
     '<meta charset="utf-8" />'+
-    `<ul>${fs.readdirSync(config.uploadDir).map(x => config.uploadDir + '/' + x).filter(x => !isFile(x)).map(x => '<li>' + x +'</li>').join('')}</ul>`+
+    `<ul>${childrenDir.map(x => '<li>📂<a href=' + x +'>' + x +'</a></li>').join('')}</ul>`+
+    `<ul>${childrenFile.map(x => '<li>📃<a href=' + x +'>' + x +'</a></li>').join('')}</ul>`+
     '<form action="/upload" enctype="multipart/form-data" method="post">'+
     '<input type="text" name="path"><br>'+
     '<input type="file" name="upload" multiple="multiple"><br>'+
