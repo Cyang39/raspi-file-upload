@@ -12,7 +12,7 @@ const isUnderServerRoot = (path, root) => path.indexOf(root) === 0
 app.get('*', (req, res) => {
   const wholePath = config.uploadDir + req.path
   // is file
-  if(fs.statSync(wholePath).isFile()) {
+  if(fs.statSync(decodeURIComponent(wholePath), 'urf8').isFile()) {
     res.end('<p> You May download! <p>')
     return
   }
