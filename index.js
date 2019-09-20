@@ -1,9 +1,14 @@
 const formidable = require('formidable')
 const util = require('util')
 const express = require('express')
-const he = require('he')
 const fs = require('fs')
 const config = require('./config')
+
+function decodeEntities(str) {
+  return str.replace(/&#(\d+);/g, function(match, dec) {
+    return String.fromCharCode(dec);
+  });
+}
 
 const app = express()
 
@@ -45,7 +50,7 @@ app.post('/upload', function(req, res) {
   form.on('field', function(name, value) {
     if(!value) value = config.uploadDir
     form.on('fileBegin', function(name, file) {
-      file.path = config.uploadDir + value + '/' + he.decode(file.name);
+      file.path = config.uploadDir + value + '/' + decodeEntities(file.name);
     })
   });
 
