@@ -2,7 +2,9 @@ const formidable = require('formidable')
 const util = require('util')
 const express = require('express')
 const fs = require('fs')
-const config = require('./config')
+const config = require('yargs')
+  .alias('uploadDir', 'path')
+  .argv
 
 function decodeEntities(str) {
   return str.replace(/&#(\d+);/g, function(match, dec) {
