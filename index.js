@@ -40,7 +40,7 @@ app.get('/fs/*', function (req, res) {
   if(req.path[req.path.length - 1] !== '/') return res.redirect(req.path + '/')
 
   const children = fs.readdirSync(req.file_path)
-    .map(x => fs.statSync(req.file_path+x).isFile() ? {name:x,type:"file",url:req.path+x} : {name:x,type:"dir",url:req.path+x})
+    .map(x => fs.statSync(req.file_path+x).isFile() ? {name:x,type:"file",url:req.path+x} : {name:x,type:"dir",url:req.path+x+'/'})
   res.render('index', { title: req.target, list: children })
 })
 
