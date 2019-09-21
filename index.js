@@ -13,17 +13,14 @@ function decodeEntities(str) {
 }
 
 function formatFileSize(size) {
-  if(size < 1024) return `${size.toFixed(2)} B`
-  size /= 1024
-  if(size < 1024) return `${size.toFixed(2)} KB`
-  size /= 1024
-  if(size < 1024) return `${size.toFixed(2)} MB`
-  size /= 1024
-  if(size < 1024) return `${size.toFixed(2)} GB`
-  size /= 1024
-  if(size < 1024) return `${size.toFixed(2)} TB`
-  size /= 1024
-  if(size < 1024) return `${size.toFixed(2)} PB`
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+  let i = 0
+  for(;;) {
+    if(size < 1024) break
+    size /= 1024
+    i++
+  }
+  return `${size.toFixed(2)} ${units[i]}`
 }
 
 const app = express()
