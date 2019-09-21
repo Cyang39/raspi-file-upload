@@ -64,4 +64,17 @@ app.post('/upload', function(req, res) {
   })
 })
 
+// 删除文件
+app.delete('/fs/*', (req, res) => {
+  const target_path = config.uploadDir + req.path.substring(3)
+  if(fs.existsSync(target_path) && statSync(target_path).isFile()) {
+    fs.unlink(target_path, (err) => {
+      if(err) console.log(err)
+      res.end("删除成功")
+    })
+  } else {
+    res.end('文件不存在，或者路径为文件夹')
+  }
+})
+
 app.listen(config.port, () => console.log(`App listening on port ${config.port}!`))
