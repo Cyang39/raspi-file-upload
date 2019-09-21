@@ -6,10 +6,9 @@ html
     table(border="1")
       tr
         th 类型
-        th 大小
         th 文件名
-        th 下载
-        th 删除
+        th 占用空间
+        th(colspan="2") 操作
       each item in list
         tr
           td 【#{item.type}】
