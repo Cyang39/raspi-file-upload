@@ -24,7 +24,7 @@ function formatFileSize(size) {
 }
 
 const app = express()
-app.set('view engine', 'pug')
+app.set('view engine', 'ejs')
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.get('*', express.static(config.uploadDir, { dotfiles: 'allow' }))
 app.get('/', (req, res) => res.redirect('/fs/'))

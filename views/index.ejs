@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+</head>
+<body>
+  <table>
+    <tr>
+      <th>类型</th>
+      <th>文件名</th>
+      <th>占用空间</th>
+      <th colspan="2">操作</th>
+    </tr>
+    <% for(let i=0; i < list.length; i++) { %>
+      <tr>
+        <td>[<%= list[i].type %>]</td>
+        <td>
+          <% if(list[i].type === 'dir') { %>
+            <a href="<%= list[i].url %>"><%=list[i].name%></a>
+          <% } else { %>
+            <%= list[i].name %>
+          <% } %>
+        </td>
+        <td>
+          <% if(list[i].type === 'file') { %>
+            <%= list[i].size %>
+          <% } %>
+        </td>
+        <td>
+          <% if(list[i].type === 'file') { %>
+            <a href="<%= list[i].url %>">下载</a>
+          <% } %>
+        </td>
+        <td>
+          <% if(list[i].type === 'file') { %>
+            <a href="<%= list[i].url + '?operate=delete' %>">删除</a>
+          <% } %>
+        </td>
+      </tr>
+    <% } %>
+  </table>
+  <br>
+  <form action="/upload" enctype="multipart/form-data" method="post">
+    <input type="text" name="path" readonly value="<%=title%>">
+    <input type="file" name="upload" multiple="multiple">
+    <input type="submit" value="Upload">
+  </form>
+</body>
+</html>
