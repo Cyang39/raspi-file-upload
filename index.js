@@ -24,23 +24,28 @@ app.all('/fs/*', (req, res, next) => {
   next()
 })
 
-// 下载文件
 app.get('/fs/*', function (req, res) {
-
+  // 文件不存在
   if(!fs.existsSync(req.file_path)) {
     res.render('error', {message: `No such file or folder "${req.target}"`})
     return
   }
-
+  // 删除文件
+  if(req.query.operate === 'delete' || req.query.operate === 'del') {
+    if(!fs.statSync(req.file_path).isFile()) return res.render('error', {message: `目前无法删除目录`})
+    fs.unlinkSync(req.file_path)
+    return res.redirect('./')
+  }
+  // 下载文件
   if(fs.statSync(req.file_path).isFile()) {
     res.sendFile(req.file_path)
     return
   }
-
+  // 进入目录
   if(req.path[req.path.length - 1] !== '/') return res.redirect(req.path + '/')
 
   const children = fs.readdirSync(req.file_path)
-    .map(x => fs.statSync(req.file_path+x).isFile() ? {name:x,type:"file",url:req.path+x} : {name:x,type:"dir",url:req.path+x+'/'})
+    .map(x => fs.statSync(req.file_path+x).isFile() ? {name:x,type:"file",url:req.path+x} : {name:x,type:"dir",url:req.path+x})
   res.render('index', { title: req.target, list: children })
 })
 
@@ -63,17 +68,4 @@ app.post('/upload', function(req, res) {
   })
 })
 
-// 删除文件
-app.delete('/fs/*', (req, res) => {
-  const target_path = config.uploadDir + req.path.substring(3)
-  if(fs.existsSync(target_path) && fs.statSync(target_path).isFile()) {
-    fs.unlink(target_path, (err) => {
-      if(err) console.log(err)
-      res.end("删除成功")
-    })
-  } else {
-    res.end('文件不存在，或者路径为文件夹')
-  }
-})
-
-app.listen(config.port, () => console.log(`App listening on port ${config.port}!`))
+app.listen(config.port)

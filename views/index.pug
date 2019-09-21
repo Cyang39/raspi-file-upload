@@ -3,11 +3,23 @@ html
   head
     title=title
   body
-    ul
+    table(border="1")
       each item in list
-        li
-          b 【#{item.type}】
-          a(href=item.url)=item.name
+        tr
+          td 【#{item.type}】
+          case item.type
+            when 'file'
+              td #{item.name}
+              td
+                a(href=item.url) 下载
+              td
+                a(href=item.url + '?operate=delete') 删除
+            when 'dir'
+              td
+                a(href=item.url) #{item.name}
+              td
+              td
+    br
     form(action="/upload" enctype="multipart/form-data" method="post")
       input(type="text" name="path" readonly value=title)
       input(type="file" name="upload" multiple="multiple")
