@@ -6,6 +6,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "formidable": "^1.2.1",
+    "pug": "^2.0.4",
     "yargs": "^14.0.0"
   }
 }

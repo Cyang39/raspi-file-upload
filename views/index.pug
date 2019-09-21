@@ -1,0 +1,14 @@
+html
+  meta(charset='utf-8')
+  head
+    title=title
+  body
+    ul
+      each item in list
+        li
+          b 【#{item.type}】
+          a(href=item.url)=item.name
+    form(action="/upload" enctype="multipart/form-data" method="post")
+      input(type="text" name="path" readonly value=title)
+      input(type="file" name="upload" multiple="multiple")
+      input(type="submit" value="Upload")

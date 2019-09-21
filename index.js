@@ -13,39 +13,38 @@ function decodeEntities(str) {
 }
 
 const app = express()
-
-const isUnderServerRoot = (path, root) => path.indexOf(root) === 0
-const statSync = (path) => fs.statSync(decodeURIComponent(path), "utf8")
-const readdirSync = (path) => fs.readdirSync(decodeURIComponent(path), "utf8")
-
+app.set('view engine', 'pug')
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.get('*', express.static(config.uploadDir, { dotfiles: 'allow' }))
+app.get('/', (req, res) => res.redirect('/fs/'))
 
-app.get('*', (req, res) => {
-  const wholePath = config.uploadDir + req.path
-  // is file
-  if(statSync(wholePath).isFile()) {
-    res.sendFile(decodeURIComponent(wholePath))
-    return
-  }
-  // is folder
-  const children = readdirSync(wholePath)
-  const childrenDir = children.filter(x => !statSync(wholePath + '/' + x).isFile())
-  const childrenFile = children.filter(x => statSync(wholePath + '/' + x).isFile())
-
-  res.writeHead(200, {'content-type': 'text/html'})
-  res.end(
-    '<meta charset="utf-8" />'+
-    `<ul>${childrenDir.map(x => '<li>【文件夹】 <a href="' + req.path + x + '/">' + x +'</a></li>').join('')}</ul>`+
-    `<ul>${childrenFile.map(x => '<li>【文件】  <a href="'+ req.path +  x + '" target="_blank">' + x +'</a></li>').join('')}</ul>`+
-    '<form action="/upload" enctype="multipart/form-data" method="post">'+
-    '<input type="text" name="path" value="'+ decodeURIComponent(req.path) +'" readonly><br>'+
-    '<input type="file" name="upload" multiple="multiple"><br>'+
-    '<input type="submit" value="Upload">'+
-    '</form>'
-  )
+app.all('/fs/*', (req, res, next) => {
+  req.target = decodeURIComponent(req.path.substring(3))
+  req.file_path = config.uploadDir + req.target
+  next()
 })
 
+// 下载文件
+app.get('/fs/*', function (req, res) {
+
+  if(!fs.existsSync(req.file_path)) {
+    res.render('error', {message: `No such file or folder "${req.target}"`})
+    return
+  }
+
+  if(fs.statSync(req.file_path).isFile()) {
+    res.sendFile(req.file_path)
+    return
+  }
+
+  if(req.path[req.path.length - 1] !== '/') return res.redirect(req.path + '/')
+
+  const children = fs.readdirSync(req.file_path)
+    .map(x => fs.statSync(req.file_path+x).isFile() ? {name:x,type:"file",url:req.path+x} : {name:x,type:"dir",url:req.path+x})
+  res.render('index', { title: req.target, list: children })
+})
+
+// 上传文件
 app.post('/upload', function(req, res) {
   var form = new formidable.IncomingForm()
   form.maxFileSize = 4 * 1000 * 1000 * 1000
@@ -53,7 +52,7 @@ app.post('/upload', function(req, res) {
   form.on('field', function(name, value) {
     if(!value) value = config.uploadDir
     form.on('fileBegin', function(name, file) {
-      file.path = config.uploadDir + value + '/' + decodeEntities(file.name);
+      file.path = config.uploadDir + value + decodeEntities(file.name);
     })
   });
 
@@ -67,7 +66,7 @@ app.post('/upload', function(req, res) {
 // 删除文件
 app.delete('/fs/*', (req, res) => {
   const target_path = config.uploadDir + req.path.substring(3)
-  if(fs.existsSync(target_path) && statSync(target_path).isFile()) {
+  if(fs.existsSync(target_path) && fs.statSync(target_path).isFile()) {
     fs.unlink(target_path, (err) => {
       if(err) console.log(err)
       res.end("删除成功")
