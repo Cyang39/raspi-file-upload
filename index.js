@@ -12,6 +12,20 @@ function decodeEntities(str) {
   });
 }
 
+function formatFileSize(size) {
+  if(size < 1024) return `${size.toFixed(2)} B`
+  size /= 1024
+  if(size < 1024) return `${size.toFixed(2)} KB`
+  size /= 1024
+  if(size < 1024) return `${size.toFixed(2)} MB`
+  size /= 1024
+  if(size < 1024) return `${size.toFixed(2)} GB`
+  size /= 1024
+  if(size < 1024) return `${size.toFixed(2)} TB`
+  size /= 1024
+  if(size < 1024) return `${size.toFixed(2)} PB`
+}
+
 const app = express()
 app.set('view engine', 'pug')
 app.get('/favicon.ico', (req, res) => res.status(204));
@@ -42,11 +56,19 @@ app.get('/fs/*', function (req, res) {
     return
   }
   // 进入目录
-  if(req.path[req.path.length - 1] !== '/') return res.redirect(req.path + '/')
+  if(fs.statSync(req.file_path).isDirectory()) {
+    if(req.path[req.path.length - 1] !== '/') return res.redirect(req.path + '/')
 
-  const children = fs.readdirSync(req.file_path)
-    .map(x => fs.statSync(req.file_path+x).isFile() ? {name:x,type:"file",url:req.path+x} : {name:x,type:"dir",url:req.path+x})
-  res.render('index', { title: req.target, list: children })
+    const children = fs.readdirSync(req.file_path).map(x => {
+        const res = {name:x, url:req.path + x}
+        const stat = fs.statSync(req.file_path+x)
+        res.type = stat.isDirectory() ? 'dir' : stat.isFile() ? 'file' : 'unkonw'
+        res.size = formatFileSize(stat.size)
+        return res
+      })
+    res.render('index', { title: req.target, list: children })
+  }
+
 })
 
 // 上传文件

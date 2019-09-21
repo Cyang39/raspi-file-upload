@@ -4,12 +4,19 @@ html
     title=title
   body
     table(border="1")
+      tr
+        th 类型
+        th 大小
+        th 文件名
+        th 下载
+        th 删除
       each item in list
         tr
           td 【#{item.type}】
           case item.type
             when 'file'
               td #{item.name}
+              td #{item.size}
               td
                 a(href=item.url) 下载
               td
@@ -17,6 +24,7 @@ html
             when 'dir'
               td
                 a(href=item.url) #{item.name}
+              td N/A
               td
               td
     br
