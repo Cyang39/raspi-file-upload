@@ -6,22 +6,11 @@ const config = require('yargs')
   .alias('uploadDir', 'path')
   .argv
 
-function decodeEntities(str) {
-  return str.replace(/&#(\d+);/g, function(match, dec) {
-    return String.fromCharCode(dec);
-  });
-}
+const t = require('./lib/utils')
 
-function formatFileSize(size) {
-  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-  let i = 0
-  for(;;) {
-    if(size < 1024) break
-    size /= 1024
-    i++
-  }
-  return `${size.toFixed(2)} ${units[i]}`
-}
+// 默认配置
+config.uploadDir = config.uploadDir || __dirname
+config.port = config.port || 8080
 
 const app = express()
 app.set('view engine', 'ejs')
@@ -61,7 +50,7 @@ app.get('/fs/*', function (req, res) {
         const res = {name:x, url:req.path + x}
         const stat = fs.statSync(req.file_path+x)
         res.type = stat.isDirectory() ? 'dir' : stat.isFile() ? 'file' : 'unkonw'
-        res.size = formatFileSize(stat.size)
+        res.size = t.formatFileSize(stat.size)
         return res
       })
     res.render('index', { title: req.target, list: children })
@@ -77,7 +66,7 @@ app.post('/upload', function(req, res) {
   form.on('field', function(name, value) {
     if(!value) value = config.uploadDir
     form.on('fileBegin', function(name, file) {
-      file.path = config.uploadDir + value + decodeEntities(file.name);
+      file.path = config.uploadDir + value + t.decodeEntities(file.name);
     })
   });
 
