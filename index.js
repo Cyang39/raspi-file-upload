@@ -28,6 +28,7 @@ app.set('view engine', 'ejs')
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.get('*', express.static(config.uploadDir, { dotfiles: 'allow' }))
 app.get('/', (req, res) => res.redirect('/fs/'))
+app.get('/home', (req, res) => res.sendFile(__dirname+'/index.html'))
 
 app.all('/fs/*', (req, res, next) => {
   req.target = decodeURIComponent(req.path.substring(3))
