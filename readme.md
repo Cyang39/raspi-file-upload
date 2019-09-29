@@ -1,3 +1,10 @@
+## 用法
+```bash
+git clone <这个仓库>
+cd <这个仓库>
+npm i # 或者用yarn
+node index.js # 建议用 pm2 后台运行
+```
 ## Todo
  - [ ] 上传重名文件提示
  - [x] 路径不存在提示
