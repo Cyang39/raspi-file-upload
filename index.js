@@ -13,11 +13,18 @@ config.uploadDir = config.uploadDir || __dirname
 config.port = config.port || 8080
 
 const app = express()
+
+app.use((req, res, next) => {
+  req.config = res.config = config
+  next();
+})
+
 app.set('view engine', 'ejs')
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.get('*', express.static(config.uploadDir, { dotfiles: 'allow' }))
 app.get('/', (req, res) => res.redirect('/fs/'))
-app.get('/home', (req, res) => res.sendFile(__dirname+'/index.html'))
+
+app.use('/api', require('./lib/routers/api'))
 
 app.all('/fs/*', (req, res, next) => {
   req.target = decodeURIComponent(req.path.substring(3))

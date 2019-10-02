@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title><%= title %></title>
+  <style>
+  .button {
+    border: .1em solid;
+    display: inline-block;
+    padding: 0.2em;
+    border-radius: .5em;
+  }
+  .button:hover {
+    cursor: pointer;
+  }
+  </style>
 </head>
 <body>
   <table>
@@ -46,5 +57,14 @@
     <input type="file" name="upload" multiple="multiple">
     <input type="submit" value="Upload">
   </form>
+  <div class="button" onclick="mkdir()">创建文件夹</div>
+  <script>
+  function mkdir() {
+    const dirname = prompt("请输入文件夹名称", "");
+    if(dirname) {
+      window.location.href = "/api/mkdir?path=" + (document.title + dirname)
+    }
+  }
+  </script>
 </body>
 </html>
