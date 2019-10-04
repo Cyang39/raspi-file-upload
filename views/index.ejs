@@ -21,10 +21,9 @@
     }
 
     .button {
-      border: .1em solid;
+      border: .1em solid #ddd;
       display: inline-block;
       padding: 0.2em;
-      border-radius: .5em;
     }
 
     .button:hover {
@@ -89,13 +88,15 @@
     <div class="button" onclick="toggleUploadDialog()">上传文件</div>
 
     <div class="dialog" id="upload-dialog">
-      <form action="/upload" enctype="multipart/form-data" method="post">
-        <input type="text" name="path" readonly value="<%=title%>" style="display: none">
-        <input type="file" name="upload" multiple="multiple">
+      <form id="submitform" action="/upload" enctype="multipart/form-data" method="post" style="display: none">
+        <input type="text" name="path" readonly value="<%=title%>">
+        <input type="file" name="upload" multiple="multiple" id="btn_file" onchange="pathchange()">
         <br>
-        <input type="submit" value="确认上传">
       </form>
-      <div onclick="toggleUploadDialog()" class="button">取消</div>
+      <div id="filepath">请选择文件...</div>
+      <div class="button" onclick="F_Open_dialog()">选择文件</div>
+      <div class="button" onclick="submitform()">确认上传</div>
+      <div onclick="toggleUploadDialog()" class="button">取消上传</div>
     </div>
 
   </div>
@@ -114,6 +115,18 @@
       else
       upload_dialog.style.display="";
     }
+
+    function F_Open_dialog() {
+        document.getElementById("btn_file").click(); 
+    }
+    function pathchange() {
+      const filename = document.getElementById("btn_file").value.split('\\').pop()
+      document.getElementById('filepath').innerText = filename
+    }
+    function submitform() {
+      document.getElementById("submitform").submit();
+    }
+
   </script>
 </body>
 
