@@ -14,6 +14,7 @@ config.port = config.port || 8080
 
 const app = express()
 
+// process
 app.use((req, res, next) => {
   req.config = res.config = config
   next();
