@@ -21,11 +21,10 @@ app.use((req, res, next) => {
 })
 
 app.set('view engine', 'ejs')
-app.get('/favicon.ico', (req, res) => res.status(204));
 app.get('/', (req, res) => res.redirect('/fs/'))
-app.get('*', express.static(config.uploadDir, { dotfiles: 'allow' }))
-app.get('/web', (req, res) => res.sendFile(__dirname + '/index.html'))
-
+app.get('/*', express.static(__dirname+'/static'))
+app.get('/fs/*', express.static(config.uploadDir, { dotfiles: 'allow' }))
+app.get('/web', (req, res) => res.sendFile(__dirname + '/static/index.html'))
 
 
 app.use('/api', require('./lib/routers/api'))
