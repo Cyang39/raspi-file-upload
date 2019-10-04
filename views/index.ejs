@@ -1,70 +1,120 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <title><%= title %></title>
   <style>
-  .button {
-    border: .1em solid;
-    display: inline-block;
-    padding: 0.2em;
-    border-radius: .5em;
-  }
-  .button:hover {
-    cursor: pointer;
-  }
+    body {
+      margin: 0;
+    }
+
+    .warp {
+      width: 800px;
+      margin: auto;
+    }
+
+    .box {
+      border: .1em solid #ddd;
+      padding: .2em;
+      margin: .2em;
+    }
+
+    .button {
+      border: .1em solid;
+      display: inline-block;
+      padding: 0.2em;
+      border-radius: .5em;
+    }
+
+    .button:hover {
+      cursor: pointer;
+    }
+
+    .dialog {
+      width: 300px;
+      height: 100px;
+      background-color: black;
+      color: azure;
+      padding: 100px;
+      position: fixed;
+      top:0;
+      left:500px;
+    }
   </style>
 </head>
+
 <body>
-  <table>
-    <tr>
-      <th>类型</th>
-      <th>文件名</th>
-      <th>占用空间</th>
-      <th colspan="2">操作</th>
-    </tr>
-    <% for(let i=0; i < list.length; i++) { %>
-      <tr>
-        <td>[<%= list[i].type %>]</td>
-        <td>
-          <% if(list[i].type === 'dir') { %>
+  <div class="warp">
+    <div class="box">当前路径：<%= title %></div>
+    <div class="box">
+      <table>
+        <tr>
+          <th>类型</th>
+          <th>文件名</th>
+          <th>占用空间</th>
+          <th colspan="2">操作</th>
+        </tr>
+        <% for(let i=0; i < list.length; i++) { %>
+        <tr>
+          <td>[<%= list[i].type %>]</td>
+          <td>
+            <% if(list[i].type === 'dir') { %>
             <a href="<%= list[i].url %>"><%=list[i].name%></a>
-          <% } else { %>
+            <% } else { %>
             <%= list[i].name %>
-          <% } %>
-        </td>
-        <td>
-          <% if(list[i].type === 'file') { %>
+            <% } %>
+          </td>
+          <td>
+            <% if(list[i].type === 'file') { %>
             <%= list[i].size %>
-          <% } %>
-        </td>
-        <td>
-          <% if(list[i].type === 'file') { %>
+            <% } %>
+          </td>
+          <td>
+            <% if(list[i].type === 'file') { %>
             <a href="<%= list[i].url %>">下载</a>
-          <% } %>
-        </td>
-        <td>
-          <% if(list[i].type === 'file') { %>
+            <% } %>
+          </td>
+          <td>
+            <% if(list[i].type === 'file') { %>
             <a href="<%= list[i].url + '?operate=delete' %>">删除</a>
-          <% } %>
-        </td>
-      </tr>
-    <% } %>
-  </table>
-  <br>
-  <form action="/upload" enctype="multipart/form-data" method="post">
-    <input type="text" name="path" readonly value="<%=title%>">
-    <input type="file" name="upload" multiple="multiple">
-    <input type="submit" value="Upload">
-  </form>
-  <div class="button" onclick="mkdir()">创建文件夹</div>
+            <% } %>
+          </td>
+        </tr>
+        <% } %>
+      </table>
+    </div>
+
+    <div class="button" onclick="mkdir()">创建文件夹</div>
+    <div class="button" onclick="toggleUploadDialog()">上传文件</div>
+
+    <div class="dialog" id="upload-dialog">
+      <form action="/upload" enctype="multipart/form-data" method="post">
+        <input type="text" name="path" readonly value="<%=title%>" style="display: none">
+        <input type="file" name="upload" multiple="multiple">
+        <br>
+        <input type="submit" value="确认上传">
+      </form>
+      <div onclick="toggleUploadDialog()" class="button">取消</div>
+    </div>
+
+  </div>
   <script>
-  function mkdir() {
-    const dirname = prompt("请输入文件夹名称", "");
-    if(dirname) {
-      window.location.href = "/api/mkdir?path=" + (document.title + dirname)
+    const upload_dialog = document.getElementById("upload-dialog");
+    upload_dialog.style.display="none";
+    function mkdir() {
+      const dirname = prompt("请输入文件夹名称", "");
+      if (dirname) {
+        window.location.href = "/api/mkdir?path=" + (document.title + dirname)
+      }
     }
-  }
+    function toggleUploadDialog() {
+      if(upload_dialog.style.display!="none")
+      　upload_dialog.style.display="none";
+      else
+      upload_dialog.style.display="";
+    }
   </script>
 </body>
+
 </html>
