@@ -5,7 +5,7 @@ new Vue({
     `<el-container>
 
     <el-header>
-      <el-page-header @back="goBack" :content="'当前路径：' + path"></el-page-header>
+      <span>网盘</span>
     </el-header>
 
     <el-container>
@@ -17,7 +17,17 @@ new Vue({
 
       <el-main>
 
+      
+      <el-button icon="el-icon-upload2" type="primary">上传</el-button>
       <yila-add-folder-button :path="path"></yila-add-folder-button>
+
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">根目录</el-breadcrumb-item>
+        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+      </el-breadcrumb>
+
       <el-row v-for="(item, index) in list" :key="index" style="margin:.1em">
       <el-col :span="6">
         <el-link v-if="item.isDir" :href="'/index.html?path=' + path + item.name + '/'" type="primary">【目录】{{item.name}}</el-link>

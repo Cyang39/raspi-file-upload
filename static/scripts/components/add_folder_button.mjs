@@ -2,7 +2,7 @@ import { get } from "../utils.mjs"
 
 Vue.component('yila-add-folder-button', {
   template:
-    `<div>
+    `<span>
     <el-button icon="el-icon-folder-add" @click="dialogVisible = true">新建文件夹</el-button>
     <el-dialog
       title="提示"
@@ -15,7 +15,8 @@ Vue.component('yila-add-folder-button', {
         <el-button type="primary" @click="onSure()">确 定</el-button>
       </span>
     </el-dialog>
-  </div>`,
+    </span>
+  `,
   props: ['path'],
   data() {
     return {
