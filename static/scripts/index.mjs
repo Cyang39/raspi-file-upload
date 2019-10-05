@@ -2,33 +2,47 @@ import { pGet, getQueryVariable } from './utils.mjs'
 
 new Vue({
   template:
-    `<div>
-    <el-page-header @back="goBack" :content="'当前路径：' + path">
-    </el-page-header>
+    `<el-container>
 
-    <el-row v-for="(item, index) in list" :key="index" style="margin:.1em">
-    <el-col :span="6">
-      <el-link v-if="item.isDir" :href="'/index.html?path=' + path + item.name + '/'" type="primary">【目录】{{item.name}}</el-link>
-      <el-link v-if="item.isFile" :href="'/api/download?path=' + path + item.name" type="primary">【文件】{{item.name}}</el-link>
-    </el-col>
-    <el-col :span="6">
-      <el-button type="danger" size="mini" @click="deleteItem(item.name)">删除</el-button>
-    </el-col>
-    </el-row>
-    
-    <el-button>新建文件夹</el-button>
+    <el-header>
+      <el-page-header @back="goBack" :content="'当前路径：' + path"></el-page-header>
+    </el-header>
 
-    <el-upload
-      class="upload-demo"
-      drag
-      :action="'/api/upload?path=' + path"
-      multiple>
-      <i class="el-icon-upload"></i>
-      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-    </el-upload>
+    <el-container>
+
+      <el-aside width="200px">
+        <div>最近上传</div>
+        <div>回收站</div>
+      </el-aside>
+
+      <el-main>
+
+      <yila-add-folder-button :path="path"></yila-add-folder-button>
+      <el-row v-for="(item, index) in list" :key="index" style="margin:.1em">
+      <el-col :span="6">
+        <el-link v-if="item.isDir" :href="'/index.html?path=' + path + item.name + '/'" type="primary">【目录】{{item.name}}</el-link>
+        <el-link v-if="item.isFile" :href="'/api/download?path=' + path + item.name" type="primary">【文件】{{item.name}}</el-link>
+      </el-col>
+      <el-col :span="6">
+        <el-button type="danger" size="mini" @click="deleteItem(item.name)">删除</el-button>
+      </el-col>
+      </el-row>
+      
+      <br>
+
+      <el-upload
+        class="upload-demo"
+        drag
+        :action="'/api/upload?path=' + path"
+        multiple>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      </el-upload>
+    </el-main>
   
+    </el-container>
     
-  </div>`,
+  </el-container>`,
   el: '#app',
   data: {
     path: "",
