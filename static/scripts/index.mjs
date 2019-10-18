@@ -4,29 +4,11 @@ new Vue({
   template:
     `<el-container>
 
-    <el-header>
-      <span>网盘</span>
-    </el-header>
-
     <el-container>
-
-      <el-aside width="200px">
-        <div>最近上传</div>
-        <div>回收站</div>
-      </el-aside>
 
       <el-main>
 
-      
-      <el-button icon="el-icon-upload2" type="primary">上传</el-button>
       <yila-add-folder-button :path="path"></yila-add-folder-button>
-
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">根目录</el-breadcrumb-item>
-        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-      </el-breadcrumb>
 
       <el-row v-for="(item, index) in list" :key="index" style="margin:.1em">
       <el-col :span="6">
@@ -34,7 +16,7 @@ new Vue({
         <el-link v-if="item.isFile" :href="'/api/download?path=' + path + item.name" type="primary">【文件】{{item.name}}</el-link>
       </el-col>
       <el-col :span="6">
-        <el-button type="danger" size="mini" @click="deleteItem(item.name)">删除</el-button>
+        <span class="hbtn" @click="deleteItem(item.name)">删除</span>
       </el-col>
       </el-row>
       
