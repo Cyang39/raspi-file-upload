@@ -4,12 +4,13 @@ new Vue({
   template:
     `<div style="width: 800px; margin:auto">
 
+      <span class="hbtn" @click="goBack()">返回</span>
       <yila-add-folder-button :path="path"></yila-add-folder-button>
-
+      <span>{{path}}</span>
       <hr>
 
       <div class="hdir-list-line" v-for="(item, index) in list" :key="index">
-        <a class="hdir-list-item" v-if="item.isDir" :href="'/index.html?path=' + path + item.name + '/'">🗂 {{item.name}}</a>
+        <span class="hdir-list-item dir" v-if="item.isDir" @click="updatePath(item.name)">🗂 {{item.name}}</span>
         <span class="hdir-list-item" v-if="item.isFile">📄 {{item.name}}</span>
         <span class="hbtn warn" v-if="item.isFile" @click="deleteItem(item.name)">删除</span>
         <a class="hbtn" v-if="item.isFile" :href="'/api/download?path=' + path + item.name">下载</a>
@@ -64,7 +65,14 @@ new Vue({
       });
     },
     goBack() {
-      console.log("back")
+      if(this.path === '/') return;
+      const curPath = this.path.split('/').filter(x => x)
+      curPath.pop()
+      curPath.unshift('')
+      this.path = curPath.join('/') + '/'
+    },
+    updatePath(name) {
+      this.path = this.path + name + '/'
     }
   }
 })
