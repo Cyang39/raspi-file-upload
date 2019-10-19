@@ -2,25 +2,20 @@ import { pGet, getQueryVariable } from './utils.mjs'
 
 new Vue({
   template:
-    `<el-container>
-
-    <el-container>
-
-      <el-main>
+    `<div style="width: 800px; margin:auto">
 
       <yila-add-folder-button :path="path"></yila-add-folder-button>
 
-      <el-row v-for="(item, index) in list" :key="index" style="margin:.1em">
-      <el-col :span="6">
-        <el-link v-if="item.isDir" :href="'/index.html?path=' + path + item.name + '/'" type="primary">【目录】{{item.name}}</el-link>
-        <el-link v-if="item.isFile" :href="'/api/download?path=' + path + item.name" type="primary">【文件】{{item.name}}</el-link>
-      </el-col>
-      <el-col :span="6">
-        <span class="hbtn" @click="deleteItem(item.name)">删除</span>
-      </el-col>
-      </el-row>
+      <hr>
+
+      <div class="hdir-list-line" v-for="(item, index) in list" :key="index">
+        <a class="hdir-list-item" v-if="item.isDir" :href="'/index.html?path=' + path + item.name + '/'">🗂 {{item.name}}</a>
+        <span class="hdir-list-item" v-if="item.isFile">📄 {{item.name}}</span>
+        <span class="hbtn warn" v-if="item.isFile" @click="deleteItem(item.name)">删除</span>
+        <a class="hbtn" v-if="item.isFile" :href="'/api/download?path=' + path + item.name">下载</a>
+      </div>
       
-      <br>
+      <hr>
 
       <el-upload
         class="upload-demo"
@@ -30,11 +25,8 @@ new Vue({
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </el-upload>
-    </el-main>
-  
-    </el-container>
     
-  </el-container>`,
+  </div>`,
   el: '#app',
   data: {
     path: "",
