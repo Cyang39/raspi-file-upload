@@ -13,6 +13,7 @@ new Vue({
         <span class="hdir-list-item dir" v-if="item.isDir" @click="updatePath(item.name)">🗂 {{item.name}}</span>
         <span class="hdir-list-item" v-if="item.isFile">📄 {{item.name}}</span>
         <span class="hbtn warn" v-if="item.isFile" @click="deleteItem(item.name)">删除</span>
+        <span class="hbtn warn" v-else @click="deleteDir(item.name)">删除目录</span>
         <a class="hbtn" v-if="item.isFile" :href="'/api/download?path=' + path + item.name">下载</a>
       </div>
       
@@ -63,6 +64,32 @@ new Vue({
           message: '已取消删除'
         });          
       });
+    },
+    deleteDir(name) {
+      this.$confirm('此操作将永久删除该目录, 是否继续?','警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        let msg = await pGet('/api/delete?path=' + this.path + name)
+        if(msg !== 'success') {
+          this.$message({
+            type: 'info',
+            message: msg
+          });   
+        } else {
+          this.updateList()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });   
+      })
     },
     goBack() {
       if(this.path === '/') return;
