@@ -5,6 +5,10 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    }
+
     .hbtn {
       display: inline-block;
       text-decoration: none;
@@ -14,26 +18,32 @@
       font-size: .5em;
       padding: .25em .5em;
     }
+
     .hbtn:hover {
       cursor: pointer;
       background-color: lightsteelblue;
       color: snow;
     }
+
     .warn:hover {
       background-color: lightcoral;
       color: snow;
     }
+
     .hdir-list-item {
       text-decoration: none;
       display: inline-block;
       width: 600px;
     }
+
     .dir {
       color: darkcyan;
     }
+
     .dir:hover {
       cursor: pointer;
     }
+
     .hdir-list-line:hover {
       background-color: #ddd;
     }
@@ -41,8 +51,8 @@
 </head>
 
 <body>
-   <script src="https://unpkg.com/vue/dist/vue.js"></script>
-   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <div id="app"></div>
   <script type="module" src="scripts/components/add_folder_button.mjs"></script>
   <script type="module" src="scripts/index.mjs"></script>
