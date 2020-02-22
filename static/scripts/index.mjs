@@ -1,10 +1,11 @@
-import { pGet, getQueryVariable } from './utils.mjs'
+import { pGet, getQueryVariable, changeURLPar } from './utils.mjs'
 
 new Vue({
   template:
     `<div style="width: 800px; margin:auto">
 
-      <span class="hbtn" @click="goBack()">返回</span>
+      <span class="hbtn" @click="path='/'">根目录</span>
+      <span class="hbtn" @click="goBack()">上层</span>
       <yila-add-folder-button :path="path"></yila-add-folder-button>
       <span>{{path}}</span>
       <hr>
@@ -35,11 +36,20 @@ new Vue({
     list: []
   },
   created() {
-    this.path = getQueryVariable('path') || "/"
+    window.onpopstate = () => {
+      let tmp = getQueryVariable('path')
+      if(tmp && tmp[tmp.length - 1] !== '/') tmp += '/'
+      this.path = tmp || "/"
+    }
+    let tmp = getQueryVariable('path')
+    if(tmp && tmp[tmp.length - 1] !== '/') tmp += '/'
+    this.path = tmp || "/"
   },
   watch: {
     path() {
       this.updateList()
+      let newPath = changeURLPar(document.URL, 'path', this.path)
+      history.pushState(null, null, newPath)
     }
   },
   methods: {
