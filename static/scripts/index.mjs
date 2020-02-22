@@ -10,6 +10,10 @@ new Vue({
       <span>{{path}}</span>
       <hr>
 
+      <div v-if="list.length === 0">
+        <span style="color:#ddd">该目录为空</span>
+      </div>
+
       <div class="hdir-list-line" v-for="(item, index) in list" :key="index">
         <span class="hdir-list-item dir" v-if="item.isDir" @click="updatePath(item.name)">🗂 {{item.name}}</span>
         <span class="hdir-list-item" v-if="item.isFile">📄 {{item.name}}</span>
