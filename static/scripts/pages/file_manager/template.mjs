@@ -25,8 +25,7 @@ export default `
         <el-link disabled v-if="item.isFile">{{item.size}} 字节</el-link>
       </span>
 
-      <el-link v-if="item.isFile" type="danger" @click="deleteItem(item.name)">删除</el-link>
-      <el-link v-else type="danger" @click="deleteDir(item.name)">删除目录</el-link>
+      <el-link type="danger" @click="deleteItem(item.name, item.isDir)">删除</el-link>
       
       <el-link v-if="item.isFile" :href="'/api/download?path=' + path + item.name" type="primary">下载</el-link>
     </div>
