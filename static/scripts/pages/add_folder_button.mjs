@@ -1,6 +1,6 @@
 import { get } from "../utils.mjs"
 
-Vue.component('yila-add-folder-button', {
+export let add_folder_button = {
   template:
     `<span>
     <el-button icon="el-icon-folder-add" type="text"
@@ -41,4 +41,4 @@ Vue.component('yila-add-folder-button', {
       })
     }
   }
-})
+}

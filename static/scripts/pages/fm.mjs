@@ -1,4 +1,7 @@
 import { pGet, getQueryVariable, changeURLPar } from '../utils.mjs'
+import { add_folder_button } from "./add_folder_button.mjs";
+
+Vue.component('add-folder-button', add_folder_button)
 
 export let FM = {
   template:
@@ -8,11 +11,11 @@ export let FM = {
       <span style="color:#ddd">|</span>
       <span><el-button @click="goBack()" icon="el-icon-arrow-left" type="text">上层</el-button></span>
       <span style="color:#ddd">|</span>
-      <yila-add-folder-button :path="path"></yila-add-folder-button>
+      <add-folder-button :path="path"></add-folder-button>
       <span style="color:#ddd">|&nbsp;&nbsp;&nbsp;</span>
       <span>{{path}}</span>
       <hr>
-      
+
       <div v-if="list.length === 0">
         <span style="color:#ddd">该目录为空</span>
       </div>
