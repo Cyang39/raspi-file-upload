@@ -15,12 +15,11 @@ export default `
       <span style="color:#ddd">该目录为空</span>
     </div>
 
-    <div class="hdir-list-line" v-for="(item, index) in list" :key="index">
+    <div v-for="(item, index) in list" :key="index">
       <span style="width:500px;display:inline-block;">
         <el-link v-if="item.isDir" @click="updatePath(item.name)" type="warning"><i class="el-icon-folder"></i> {{item.name}}</el-link>
         <el-link v-if="item.isFile" disabled type="primary"><i class="el-icon-document"></i> {{item.name}}</el-link>
       </span>
-
 
       <el-link v-if="item.isFile" type="danger" @click="deleteItem(item.name)">删除</el-link>
       <el-link v-else type="danger" @click="deleteDir(item.name)">删除目录</el-link>
