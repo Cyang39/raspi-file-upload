@@ -1,4 +1,4 @@
-import { FM } from "./pages/fm.mjs";
+import FM from "./pages/file_manager/index.mjs";
 
 const routes = [
   { path: '/', redirect: '/fm' },

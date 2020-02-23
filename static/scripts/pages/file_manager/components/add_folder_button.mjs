@@ -1,6 +1,6 @@
-import { get } from "../utils.mjs"
+import { get } from "../../../utils.mjs"
 
-export let add_folder_button = {
+export default {
   template:
     `<span>
     <el-button icon="el-icon-folder-add" type="text"
