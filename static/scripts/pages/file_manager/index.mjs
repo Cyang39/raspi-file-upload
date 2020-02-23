@@ -17,23 +17,26 @@ export default {
     }
   },
   created() {
-    window.onpopstate = () => {
-      let tmp = getQueryVariable('path')
-      if(tmp && tmp[tmp.length - 1] !== '/') tmp += '/'
-      this.path = tmp || "/"
-    }
-    let tmp = getQueryVariable('path')
-    if(tmp && tmp[tmp.length - 1] !== '/') tmp += '/'
-    this.path = tmp || "/"
+     this.path = this.$route.path.split('/fm')[1] + '/'
+     this.$router.afterEach((to, from) => {
+      if(to.path.split('/fm')[0] !== '' || from.path.split('/fm')[0] !== '') return
+      this.path = to.path.split('/fm')[1] + '/'      
+     })
   },
   watch: {
     path() {
       this.updateList()
-      let newPath = changeURLPar(document.URL, 'path', this.path)
-      history.pushState(null, null, newPath)
     }
   },
   methods: {
+    toRoot() {
+      this.path = '/'
+      this.$router.push({path: '/fm'})
+    },
+    changeDir(dirname) {
+      this.$router.push({path: this.$route.path + '/' + dirname})
+      this.path = this.$route.path.split('/fm')[1] + '/'
+    },
     async updateList() {
       this.list = await pGet('/api/ls?path=' + this.path)
     },
@@ -88,6 +91,7 @@ export default {
       curPath.pop()
       curPath.unshift('')
       this.path = curPath.join('/') + '/'
+      this.$router.push({path: '/fm' + curPath.join('/')})
     },
     updatePath(name) {
       this.path = this.path + name + '/'

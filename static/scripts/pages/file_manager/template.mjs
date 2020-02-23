@@ -1,9 +1,9 @@
 export default `
 <div style="width: 800px; margin:auto">
 
-    <span><el-button icon="el-icon-s-home" @click="path='/'" type="text">根目录</el-button></span>
+    <span><el-button icon="el-icon-s-home" @click="toRoot()" type="text" :disabled="path==='/'">根目录</el-button></span>
     <span style="color:#ddd">|</span>
-    <span><el-button @click="goBack()" icon="el-icon-arrow-left" type="text">上层</el-button></span>
+    <span><el-button @click="goBack()" icon="el-icon-arrow-left" type="text" :disabled="path==='/'">上层</el-button></span>
     <span style="color:#ddd">|</span>
     <add-folder-button :path="path"></add-folder-button>
     <span style="color:#ddd">|&nbsp;&nbsp;&nbsp;</span>
@@ -17,7 +17,7 @@ export default `
 
     <div v-for="(item, index) in list" :key="index">
       <span style="width:450px;display:inline-block;">
-        <el-link v-if="item.isDir" @click="updatePath(item.name)" type="warning"><i class="el-icon-folder"></i> {{item.name}}</el-link>
+        <el-link v-if="item.isDir" @click="changeDir(item.name)" type="warning"><i class="el-icon-folder"></i> {{item.name}}</el-link>
         <el-link v-if="item.isFile" disabled type="primary"><i class="el-icon-document"></i> {{item.name}}</el-link>
       </span>
 
