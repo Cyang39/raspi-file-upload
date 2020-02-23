@@ -16,9 +16,13 @@ export default `
     </div>
 
     <div v-for="(item, index) in list" :key="index">
-      <span style="width:500px;display:inline-block;">
+      <span style="width:450px;display:inline-block;">
         <el-link v-if="item.isDir" @click="updatePath(item.name)" type="warning"><i class="el-icon-folder"></i> {{item.name}}</el-link>
         <el-link v-if="item.isFile" disabled type="primary"><i class="el-icon-document"></i> {{item.name}}</el-link>
+      </span>
+
+      <span style="width:100px;display:inline-block;">
+        <el-link disabled v-if="item.isFile">{{item.size}} 字节</el-link>
       </span>
 
       <el-link v-if="item.isFile" type="danger" @click="deleteItem(item.name)">删除</el-link>
