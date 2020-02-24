@@ -1,4 +1,5 @@
 import { get } from "../../../utils.mjs"
+import bus from '../../../bus.mjs';
 
 export default {
   template:
@@ -38,6 +39,7 @@ export default {
         })
         this.dialogVisible = false
         this.folderName = ""
+        bus.$emit('updateList')
       })
     }
   }

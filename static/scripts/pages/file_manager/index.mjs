@@ -1,4 +1,5 @@
 import { pGet } from '../../utils.mjs'
+import bus from '../../bus.mjs';
 
 // import components used in this page
 import add_folder_button from "../file_manager/components/add_folder_button.mjs"
@@ -21,6 +22,9 @@ export default {
     this.$router.afterEach((to, from) => {
       if (to.path.split('/fm')[0] !== '' || from.path.split('/fm')[0] !== '') return
       this.path = to.path.split('/fm')[1] + '/'
+    })
+    bus.$on('updateList', () => {
+      this.updateList()
     })
   },
   watch: {
